@@ -1,6 +1,6 @@
 "use strict";
 
-console.log(game());
+game();
 
 function computerPlay() {
   const plays = ["Rock", "Paper", "Scissors"];
