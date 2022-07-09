@@ -1,8 +1,6 @@
 "use strict";
 
-let playerSelection = prompt("Enter play:", "Rock");
-
-console.log(playRound(playerSelection, computerPlay()));
+console.log(game());
 
 function computerPlay() {
   const plays = ["Rock", "Paper", "Scissors"];
@@ -10,39 +8,69 @@ function computerPlay() {
 }
 
 function playRound(playerSelection, computerSelection) {
-  let win = {};
-  let lose = {};
-  let tie = {};
-
-  let rock = {
-    name: "Rock",
-    Scissors: win,
-    Paper: lose,
-    Rock: tie,
-  };
-  let paper = {
-    name: "Paper",
-    Scissors: lose,
-    Paper: tie,
-    Rock: win,
-  };
-  let scissors = {
-    name: "Scissors",
-    Scissors: tie,
-    Paper: win,
-    Rock: lose,
-  };
-
-  const plays = [rock, paper, scissors];
+  const plays = [
+    {
+      name: "Rock",
+      Scissors: "win",
+      Paper: "lose",
+      Rock: "tie",
+    },
+    {
+      name: "Paper",
+      Scissors: "lose",
+      Paper: "tie",
+      Rock: "win",
+    },
+    {
+      name: "Scissors",
+      Scissors: "tie",
+      Paper: "win",
+      Rock: "lose",
+    },
+  ];
 
   playerSelection =
     playerSelection.charAt(0).toUpperCase() +
     playerSelection.substring(1).toLowerCase();
   playerSelection = plays.find((play) => play.name == playerSelection);
 
-  win.message = `You won. ${playerSelection.name} beats ${computerSelection}`;
-  lose.message = `You lost. ${playerSelection.name} beats ${computerSelection}`;
-  tie.message = `${playerSelection.name} vs. ${computerSelection} is a tie.`;
+  let result = { name: playerSelection[computerSelection] };
+  switch (result.name) {
+    case "win":
+      result.message = `You won this round. ${playerSelection.name} beats ${computerSelection}`;
+      break;
+    case "lose":
+      result.message = `You lost this round. ${playerSelection.name} beats ${computerSelection}`;
+      break;
+    case "tie":
+      result.message = `${playerSelection.name} vs. ${computerSelection} is a tie.`;
+      break;
+  }
+  return result;
+}
 
-  return playerSelection[computerSelection].message;
+function game() {
+  let playerScore = 0;
+  let computerScore = 0;
+
+  for (let i = 0; i < 5; i++) {
+    let playerSelection = prompt("Enter play:", "Rock");
+    let computerSelection = computerPlay();
+    let roundResult = playRound(playerSelection, computerSelection);
+
+    switch (roundResult.name) {
+      case "win":
+        playerScore++;
+        break;
+      case "lose":
+        computerScore++;
+        break;
+    }
+    console.log(
+      `${roundResult.message}. Score: player: ${playerScore} computer ${computerScore}`
+    );
+  }
+  if (playerScore > computerScore) console.log("Game over. You win");
+  else if (computerScore > playerScore) console.log("Game over. You lost");
+  else console.log("Game over. Tie.");
 }
