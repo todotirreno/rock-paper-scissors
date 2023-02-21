@@ -1,6 +1,8 @@
 "use strict";
-
-game();
+let playerScore = 0;
+let computerScore = 0;
+const results = document.getElementById("results");
+document.body.addEventListener("click", game);
 
 function computerPlay() {
   const plays = ["Rock", "Paper", "Scissors"];
@@ -49,28 +51,40 @@ function playRound(playerSelection, computerSelection) {
   return result;
 }
 
-function game() {
-  let playerScore = 0;
-  let computerScore = 0;
+function game(e) {
+  if (e.target.tagName !== "BUTTON") return;
 
-  for (let i = 0; i < 5; i++) {
-    let playerSelection = prompt("Enter play:", "Rock");
-    let computerSelection = computerPlay();
-    let roundResult = playRound(playerSelection, computerSelection);
-
-    switch (roundResult.name) {
-      case "win":
-        playerScore++;
-        break;
-      case "lose":
-        computerScore++;
-        break;
-    }
-    console.log(
-      `${roundResult.message}. Score: player: ${playerScore} computer ${computerScore}`
-    );
+  if (playerScore === 5 || computerScore === 5) {
+    playerScore = 0;
+    computerScore = 0;
+    results.replaceChildren();
   }
-  if (playerScore > computerScore) console.log("Game over. You win");
-  else if (computerScore > playerScore) console.log("Game over. You lost");
-  else console.log("Game over. Tie.");
+
+  let playerSelection = e.target.dataset.option;
+  let computerSelection = computerPlay();
+  let roundResult = playRound(playerSelection, computerSelection);
+
+  switch (roundResult.name) {
+    case "win":
+      playerScore++;
+      break;
+    case "lose":
+      computerScore++;
+      break;
+  }
+  // console.log(
+  //   `${roundResult.message}. Score: player: ${playerScore} computer ${computerScore}`
+  // );
+  results.textContent += `${roundResult.message}. Score: player: ${playerScore} computer ${computerScore}\r\n`;
+  if (playerScore === 5 || computerScore === 5) {
+    results.append(
+      `Game over. Player score: ${playerScore}, Computer Score ${computerScore}. ${
+        playerScore > computerScore ? "Player" : "Computer"
+      } wins`
+    );
+    return;
+  }
+  // if (playerScore > computerScore) console.log("Game over. You win");
+  // else if (computerScore > playerScore) console.log("Game over. You lost");
+  // else console.log("Game over. Tie.");
 }
